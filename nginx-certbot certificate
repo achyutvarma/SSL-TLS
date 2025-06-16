@@ -3,7 +3,7 @@ RUN: sudo apt install certbot python3-certbot-nginx -y
 Let's say you have your application running on "https://IP:5000" and
 this is your domain name: flaskapp.,IP.nip.io
 
-RUN: sudo vim /etc/nginx/sites-available/flaskapp.107.20.111.231.nip.io
+RUN: sudo vim /etc/nginx/sites-available/flaskapp.Ip.nip.io
 Copy Paste:
 
 server {
