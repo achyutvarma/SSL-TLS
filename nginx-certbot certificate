@@ -1,0 +1,85 @@
+RUN: sudo apt install certbot python3-certbot-nginx -y
+
+Let's say you have your application running on "https://IP:5000" and
+this is your domain name: flaskapp.,IP.nip.io
+
+RUN: sudo vim /etc/nginx/sites-available/flaskapp.107.20.111.231.nip.io
+Copy Paste:
+
+server {
+    listen 80;
+    server_name flaskapp.IP.nip.io;
+ 
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+---
+Enable the Site and Reload Nginx
+RUN: sudo ln -s /etc/nginx/sites-available/flaskapp.IP.nip.io /etc/nginx/sites-enabled/
+RUN: sudo nginx -t
+RUN: sudo systemctl reload nginx
+RUN: sudo certbot --nginx -d flaskapp.IP.nip.io
+---
+
+server {
+    listen 80;
+    server_name flaskapp.IP.nip.io;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {RUN: sudo apt install certbot python3-certbot-nginx -y
+
+Let's say you have your application running on "https://107.20.111.231:5000" and
+this is your domain name: flaskapp.107.20.111.231.nip.io
+
+RUN: sudo vim /etc/nginx/sites-available/flaskapp.IP.nip.io
+Copy Paste:
+
+server {
+    listen 80;
+    server_name flaskapp.IP.nip.io;
+ 
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+---
+Enable the Site and Reload Nginx
+RUN: sudo ln -s /etc/nginx/sites-available/flaskapp.IP.nip.io /etc/nginx/sites-enabled/
+RUN: sudo nginx -t
+RUN: sudo systemctl reload nginx
+RUN: sudo certbot --nginx -d flaskapp.IP.nip.io
+---
+
+server {
+    listen 80;
+    server_name flaskapp.IP.io;
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+server {
+    listen 443 ssl;
+    server_name flaskapp.IP.nip.io;
+	ssl_certificate /etc/letsencrypt/live/flaskapp.IP.nip.io/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/flaskapp.IP.nip.io/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+	
+
+    location / {
+        proxy_pass https://IP:5000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
